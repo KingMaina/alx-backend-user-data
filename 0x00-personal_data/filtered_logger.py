@@ -14,9 +14,8 @@ def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """Filters log data to obfuscate sensitive fields"""
     for field in fields:
-        pattern = f'{field}=(.*?){separator}'
-        replacement = f'{field}={redaction}{separator}'
-        message = re.sub(pattern=pattern, repl=replacement, string=message)
+        message = re.sub(pattern=f'{field}=(.*?){separator}', string=message,
+                         repl=f'{field}={redaction}{separator}')
     return message
 
 
@@ -29,10 +28,12 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields: List[str]):
+        """Initialize a formatter"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self._fields: List[str] = fields
 
     def format(self, record: logging.LogRecord) -> str:
+        """Formats data"""
         return filter_datum(fields=self._fields,
                             redaction=self.REDACTION,
                             message=super().format(record),
@@ -42,9 +43,12 @@ class RedactingFormatter(logging.Formatter):
 def get_logger() -> logging.Logger:
     logger = logging.getLogger('user_data')
     logger.setLevel(logging.INFO)
-    formatter = RedactingFormatter([pii for pii in PII_FIELDS])
-    stream_handler = logging.StreamHandler()
+    logger.propagate = False
+    formatter = RedactingFormatter(list(PII_FIELDS))
+    stream_handler = logging.StreamHandler(None)
+    stream_handler.setLevel(logging.INFO)
     stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
     return logger
 
 
@@ -63,7 +67,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     return mysql.connector.connect(**config)
 
 
-def main():
+def main() -> None:
     """Initializes the database and retrieves filtered out information"""
     db_connection = get_db()
     # Define PII to obfuscate
