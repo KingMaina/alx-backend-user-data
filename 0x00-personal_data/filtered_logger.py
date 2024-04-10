@@ -13,10 +13,9 @@ PII_FIELDS = ('email', 'phone', 'ssn', 'password', 'ip')
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """Filters log data to obfuscate sensitive fields"""
-    for field in fields:
-        message = re.sub(pattern=f'{field}=(.*?){separator}', string=message,
-                         repl=f'{field}={redaction}{separator}')
-    return message
+    return ''.join(f'{field}={redaction}{separator}'
+                   if field in message else f'{field}={redaction}{separator}'
+                   for field in fields)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -34,8 +33,7 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Formats data"""
-        return filter_datum(fields=self._fields,
-                            redaction=self.REDACTION,
+        return filter_datum(fields=self._fields, redaction=self.REDACTION,
                             message=super().format(record),
                             separator=self.SEPARATOR)
 
