@@ -14,7 +14,6 @@ def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """Filters log data to obfuscate sensitive fields"""
     return ''.join(f'{field}={redaction}{separator}'
-                   if field in message else f'{field}={redaction}{separator}'
                    for field in fields)
 
 
@@ -39,6 +38,7 @@ class RedactingFormatter(logging.Formatter):
 
 
 def get_logger() -> logging.Logger:
+    """Returns a logging object"""
     logger = logging.getLogger('user_data')
     logger.setLevel(logging.INFO)
     logger.propagate = False
