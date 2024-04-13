@@ -68,17 +68,19 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """Connects to the database and returns the connector"""
-    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME", None)
     db_username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
     db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
     db_password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
-    config = {
-        "host": db_host,
-        "user": db_username,
-        "password": db_password,
-        "database": db_name,
-    }
-    return MySQLConnection(**config)
+    if db_name is not None:
+        config = {
+            "host": db_host,
+            "user": db_username,
+            "password": db_password,
+            "database": db_name,
+        }
+        return MySQLConnection(**config)
+    return MySQLConnection(host=db_host, user=db_username, password=db_password)
 
 
 def main() -> None:
@@ -93,8 +95,7 @@ def main() -> None:
     columns = list(db_cursor.column_names)
     for row in db_cursor:
         obfuscated_data = "".join(
-            "{}={};".format(columns[index], data)
-            for index, data in enumerate(row)
+            "{}={};".format(columns[index], data) for index, data in enumerate(row)
         )
         log_record = logging.LogRecord(
             None, logging.INFO, None, None, obfuscated_data, None, None
