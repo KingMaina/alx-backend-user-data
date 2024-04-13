@@ -8,7 +8,7 @@ from typing import List
 import mysql.connector
 from mysql.connector import MySQLConnection
 
-PII_FIELDS = ("email", "phone", "ssn", "password", "ip")
+PII_FIELDS = ("email", "phone", "ssn", "password", "name")
 
 
 def filter_datum(
@@ -48,13 +48,20 @@ class RedactingFormatter(logging.Formatter):
 
 def get_logger() -> logging.Logger:
     """Returns a logging object"""
+    # Setup logger
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
-    logger.propagate = False
+    logger.propagate = False  # Prevent logging to parent loggers
+
+    # Add formatter
     formatter = RedactingFormatter(list(PII_FIELDS))
-    stream_handler = logging.StreamHandler(None)
+
+    # Setup stream handler and formatter
+    stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.INFO)
     stream_handler.setFormatter(formatter)
+
+    # Add stream handler to logger
     logger.addHandler(stream_handler)
     return logger
 
