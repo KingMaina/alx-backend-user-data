@@ -43,17 +43,15 @@ def forbidden(error):
 
 def validate_request():
     """Validates if a request is allowed to access the API"""
-    if auth is None:
-        return
     excluded_routes = ['/api/v1/status/',
                        '/api/v1/unauthorized/',
                        '/api/v1/forbidden/']
-    if auth.require_auth(request.path, excluded_routes):
-        return
-    if auth.authorization_header(request) is None:
-        return abort(401)
-    if auth.current_user(request) is None:
-        return abort(403)
+    if auth:
+        if auth.require_auth(request.path, excluded_routes):
+            if auth.authorization_header(request) is None:
+                return abort(401)
+            if auth.current_user(request) is None:
+                return abort(403)
 
 
 if __name__ == "__main__":
