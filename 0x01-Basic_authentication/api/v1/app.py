@@ -16,12 +16,10 @@ auth = None
 auth_type = os.getenv('AUTH_TYPE')
 if auth_type is not None:
     if auth_type == 'basic_auth':
-        # from auth.basic_auth import BasicAuth
-        BasicAuth = __import__('auth/basic_auth').BasicAuth
+        from .auth.basic_auth import BasicAuth
         auth = BasicAuth()
     else:
-        # from auth.auth import Auth
-        Auth = __import__('auth/auth').Auth
+        from .auth.auth import Auth
         auth = Auth()
 
 

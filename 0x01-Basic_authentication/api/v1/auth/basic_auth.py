@@ -2,7 +2,7 @@
 """Basic Authentication class"""
 from typing import TypeVar, List
 from flask import request
-from auth import Auth
+from .auth import Auth
 from models.user import User
 
 
@@ -30,7 +30,7 @@ class BasicAuth(Auth):
             return None
         try:
             from base64 import b64decode
-            decoded_token = b64decode(base64_authorization_header)
+            decoded_token = b64decode(base64_authorization_header, validate=True)
             return decoded_token.decode('utf-8')
         except Exception as error:
             return None
@@ -61,7 +61,7 @@ class BasicAuth(Auth):
             return None
         if not user[0].is_valid_password(pwd=user_pwd):
             return None
-        return User(**user[0])
+        return user
 
     def current_user(self, request=None) -> TypeVar('User'):
         """Retrieves user instance for a request"""
