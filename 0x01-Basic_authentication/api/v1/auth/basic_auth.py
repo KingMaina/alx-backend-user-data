@@ -30,7 +30,8 @@ class BasicAuth(Auth):
             return None
         try:
             from base64 import b64decode
-            decoded_token = b64decode(base64_authorization_header, validate=True)
+            decoded_token = b64decode(base64_authorization_header,
+                                      validate=True)
             return decoded_token.decode('utf-8')
         except Exception as error:
             return None
