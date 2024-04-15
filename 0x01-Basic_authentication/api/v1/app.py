@@ -16,7 +16,7 @@ auth = None
 auth_type = os.getenv('AUTH_TYPE')
 if auth_type is not None:
     if auth_type == 'basic_auth':
-        from api.v1.auth.auth import BasicAuth
+        from api.v1.auth.basic_auth import BasicAuth
         auth = BasicAuth()
     else:
         from api.v1.auth.auth import Auth
@@ -31,29 +31,29 @@ def not_found(error) -> str:
 
 
 @app.errorhandler(401)
-def unauthorized(error) -> str:
+def unauthorized(error):
     """Unauthorized error handler"""
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
-def forbidden(error) -> str:
+def forbidden(error):
     """Forbidden error handler"""
     return jsonify({"error": "Forbidden"}), 403
 
 def validate_request():
     """Validates if a request is allowed to access the API"""
     if auth is None:
-        return None
+        return
     excluded_routes = ['/api/v1/status/',
                        '/api/v1/unauthorized/',
                        '/api/v1/forbidden/']
     if auth.require_auth(request.path, excluded_routes):
         return
     if auth.authorization_header(request) is None:
-        abort(401)
+        return abort(401)
     if auth.current_user(request) is None:
-        abort(403)
+        return abort(403)
 
 
 if __name__ == "__main__":
