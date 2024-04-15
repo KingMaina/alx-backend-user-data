@@ -41,6 +41,8 @@ def forbidden(error):
     """Forbidden error handler"""
     return jsonify({"error": "Forbidden"}), 403
 
+
+@app.before_request
 def validate_request():
     """Validates if a request is allowed to access the API"""
     excluded_routes = ['/api/v1/status/',
@@ -49,13 +51,12 @@ def validate_request():
     if auth:
         if auth.require_auth(request.path, excluded_routes):
             if auth.authorization_header(request) is None:
-                return abort(401)
+                abort(401)
             if auth.current_user(request) is None:
-                return abort(403)
+                abort(403)
 
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port, debug=True)
-    app.before_request(validate_request)
+    app.run(host=host, port=port)
