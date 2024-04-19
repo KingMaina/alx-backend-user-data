@@ -3,7 +3,7 @@
 """
 import os
 from typing import List
-from flask import jsonify, abort, make_response, request
+from flask import jsonify, abort, request
 from api.v1.views import app_views
 from models.user import User
 
@@ -17,14 +17,14 @@ def auth_session() -> str:
     email = request.form.get('email', None)
     password = request.form.get('password', None)
     if email == '' or email is None:
-        return jsonify({"error": "email missing"}), abort(400)
+        return jsonify({"error": "email missing"}), 400
     if password == '' or password is None:
-        return jsonify({"error": "password missing"}), abort(400)
+        return jsonify({"error": "password missing"}), 400
     user: List[User] = User.search({'email': email})
     if not user or not len(user):
-        return jsonify({"error": "no user found for this email"}), abort(404)
+        return jsonify({"error": "no user found for this email"}), 404
     if not user[0].is_valid_password(password):
-        return jsonify({"error": "wrong password"}), abort(401)
+        return jsonify({"error": "wrong password"}), 401
     from api.v1.app import auth
 
     session_id = auth.create_session(user[0].id)
@@ -41,6 +41,6 @@ def logout_session():
     from api.v1.app import auth
 
     is_logout_valid = auth.destroy_session(request)
-    if not is_logout_valid:
+    if is_logout_valid is False:
         abort(404)
     return jsonify({}), 200
