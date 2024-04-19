@@ -32,7 +32,7 @@ class Auth:
         """Returns the current user"""
         return None
 
-    def session_cookie(self, request = None):
+    def session_cookie(self, request=None):
         """Returns the cookie from a request"""
         if request is None:
             return None
