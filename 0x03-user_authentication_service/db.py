@@ -47,9 +47,8 @@ class DB():
                 if key not in user_keys:
                     raise InvalidRequestError
             results = self._session.query(User).filter_by(**kwargs).first()
-            if results is None:
-                raise NoResultFound
-            return results
+            if results is not None:
+                return results
 
     def update_user(self, user_id: str, **kwargs: Mapping) -> None:
         """Update a user"""
