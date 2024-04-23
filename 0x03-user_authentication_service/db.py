@@ -49,6 +49,8 @@ class DB():
             results = self._session.query(User).filter_by(**kwargs).first()
             if results is not None:
                 return results
+            else:
+                raise NoResultFound
 
     def update_user(self, user_id: str, **kwargs: Mapping) -> None:
         """Update a user"""
