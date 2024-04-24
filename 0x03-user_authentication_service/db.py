@@ -40,17 +40,18 @@ class DB():
 
     def find_user_by(self, **kwargs: Mapping) -> User:
         """Find a user based on user properties"""
-        if kwargs:
-            user_keys = ('id', 'email', 'hashed_password',
-                         'session_id', 'reset_token')
-            for key in kwargs.keys():
-                if key not in user_keys:
-                    raise InvalidRequestError
-            results = self._session.query(User).filter_by(**kwargs).first()
-            if results is not None:
-                return results
-            else:
-                raise NoResultFound
+        if not kwargs:
+            raise InvalidRequestError
+        user_keys = ('id', 'email', 'hashed_password',
+                        'session_id', 'reset_token')
+        for key in kwargs.keys():
+            if key not in user_keys:
+                raise InvalidRequestError
+        results = self._session.query(User).filter_by(**kwargs).first()
+        if results is not None:
+            return results
+        else:
+            raise NoResultFound
 
     def update_user(self, user_id: str, **kwargs: Mapping) -> None:
         """Update a user"""

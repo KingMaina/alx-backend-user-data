@@ -26,8 +26,8 @@ def users() -> str:
         email = request.form.get('email', None)
         password = request.form.get('password', None)
         user = AUTH.register_user(email, password)
-        return jsonify({"email": user.email, "message": "user created"})
-    except Exception as error:
+        return jsonify({"email": user.email, "message": "user created"}), 200
+    except ValueError as error:
         return jsonify({"message": "email already registered"}), 400
 
 
@@ -74,7 +74,7 @@ def get_reset_password_token() -> str:
     try:
         reset_token = AUTH.get_reset_password_token(email)
         return jsonify({"email": email, "reset_token": reset_token}), 200
-    except Exception as error:
+    except ValueError as error:
         abort(403)
 
 

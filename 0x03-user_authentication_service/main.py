@@ -5,7 +5,7 @@ import requests
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
-API_URL='http://localhost:5000'
+API_URL = 'http://localhost:5000'
 
 
 def register_user(email: str, password: str) -> None:
@@ -15,12 +15,12 @@ def register_user(email: str, password: str) -> None:
     expected_fail = {"email": "email already registered"}
 
     # Register user first time should be successful
-    response = requests.post('{}/'.format(API_URL), payload)
+    response = requests.post('{}/users'.format(API_URL), payload)
     assert response.status_code == 200
     assert response.json() == expected_success
 
     # Register user second time should fail
-    response = requests.post('{}/'.format(API_URL), payload)
+    response = requests.post('{}/users'.format(API_URL), payload)
     assert response.status_code == 400
     assert response.json() == expected_fail
 
