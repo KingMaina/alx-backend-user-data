@@ -40,8 +40,6 @@ class DB():
 
     def find_user_by(self, **kwargs: Mapping) -> User:
         """Find a user based on user properties"""
-        if not kwargs:
-            raise InvalidRequestError
         user_keys = ('id', 'email', 'hashed_password',
                      'session_id', 'reset_token')
         for key in kwargs.keys():
