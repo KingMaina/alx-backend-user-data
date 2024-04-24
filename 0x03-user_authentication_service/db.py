@@ -52,14 +52,13 @@ class DB():
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Update a user"""
-        if kwargs:
-            self.find_user_by(id=user_id)
-            user_keys = ('id', 'email', 'hashed_password',
-                         'session_id', 'reset_token')
-            for key in kwargs.keys():
-                if key not in user_keys:
-                    raise ValueError
-            self._session.query(User).update(kwargs)
-            self._session.commit()
-        else:
+        if not kwargs:
             raise ValueError
+        self.find_user_by(id=user_id)
+        user_keys = ('id', 'email', 'hashed_password',
+                        'session_id', 'reset_token')
+        for key in kwargs.keys():
+            if key not in user_keys:
+                raise ValueError
+        self._session.query(User).update(kwargs)
+        self._session.commit()
