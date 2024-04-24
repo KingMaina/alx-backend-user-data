@@ -50,7 +50,7 @@ class DB():
             raise NoResultFound
         return results
 
-    def update_user(self, user_id: str, **kwargs: Mapping) -> None:
+    def update_user(self, user_id: str, **kwargs) -> None:
         """Update a user"""
         if kwargs:
             self.find_user_by(id=user_id)
