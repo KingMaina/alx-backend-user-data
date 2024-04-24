@@ -38,7 +38,7 @@ class DB():
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs: Mapping) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """Find a user based on user properties"""
         user_keys = ('id', 'email', 'hashed_password',
                      'session_id', 'reset_token')
