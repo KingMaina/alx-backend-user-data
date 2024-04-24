@@ -3,6 +3,7 @@
 from typing import Union
 import bcrypt
 from uuid import uuid4
+from sqlalchemy.exc import NoResultFound
 from db import DB
 from user import User
 
@@ -26,11 +27,14 @@ class Auth:
 
     def register_user(self, email: str, password: str) -> User:
         """Registers a new user"""
-        user_exists = self._db.find_user_by(email=email)
-        if user_exists is not None:
-            raise ValueError("User {} already exists".format(email))
-        hashed_password = _hash_password(password)
-        return self._db.add_user(email, hashed_password)
+        try:
+            user = self._db.find_user_by(email=email)
+            if user:
+                raise ValueError("User {} already exists".format(email))
+        except NoResultFound as error:
+            hashed_password = _hash_password(password)
+            return self._db.add_user(email, hashed_password.decode('utf-8'))
+
 
     def valid_login(self, email: str, password: str) -> bool:
         """Validates user credentials"""
