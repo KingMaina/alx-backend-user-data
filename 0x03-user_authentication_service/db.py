@@ -55,8 +55,8 @@ class DB():
         if not kwargs:
             raise ValueError
         self.find_user_by(id=user_id)
-        user_keys = ('id', 'email', 'hashed_password',
-                        'session_id', 'reset_token')
+        user_keys = ('id', 'email', 'hashed_password', 'session_id',
+                     'reset_token')
         for key in kwargs.keys():
             if key not in user_keys:
                 raise ValueError
