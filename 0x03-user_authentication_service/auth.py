@@ -9,13 +9,13 @@ from db import DB
 from user import User
 
 
-def _hash_password(password: str) -> bytes:
+def _hash_password(password: str) -> str:
     """Encrypts a password"""
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
-    """Generte a unique ID"""
+    """Generate a unique ID"""
     return str(uuid4())
 
 
@@ -30,7 +30,7 @@ class Auth:
         """Registers a new user"""
         try:
             self._db.find_user_by(email=email)
-            raise ValueError("User {} already exists".format(email))
+            raise ValueError('User {} already exists'.format(email))
         except NoResultFound:
             hashed_password = _hash_password(password)
             return self._db.add_user(email, hashed_password)
