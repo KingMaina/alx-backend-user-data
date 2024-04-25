@@ -80,7 +80,7 @@ class Auth:
         """Updates a user's password"""
         try:
             user = self._db.find_user_by(reset_token=reset_token)
-            hashed_password = _hash_password(password.encode("utf-8"))
+            hashed_password = _hash_password(password)
             self._db.update_user(user_id=user.id,
                                  hashed_password=hashed_password,
                                  reset_token=None)
