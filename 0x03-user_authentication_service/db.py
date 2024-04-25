@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """DB module
 """
-from typing import Mapping
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
