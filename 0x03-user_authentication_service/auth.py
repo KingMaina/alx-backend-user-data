@@ -4,6 +4,7 @@ from typing import Union
 import bcrypt
 from uuid import uuid4
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 from db import DB
 from user import User
 
@@ -29,11 +30,12 @@ class Auth:
         """Registers a new user"""
         try:
             self._db.find_user_by(email=email)
+            raise ValueError("User {} already exists".format(email))
         except NoResultFound:
             hashed_password = _hash_password(password)
             return self._db.add_user(email, hashed_password)
-        else:
-            raise ValueError("User {} already exists".format(email))
+        except InvalidRequestError:
+            return None
 
     def valid_login(self, email: str, password: str) -> bool:
         """Validates user credentials"""
