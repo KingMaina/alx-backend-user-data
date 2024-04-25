@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """Authentication module"""
-from typing import Union
 import bcrypt
+from typing import Union
 from uuid import uuid4
 from sqlalchemy.exc import NoResultFound
-from sqlalchemy.exc import InvalidRequestError
 from db import DB
 from user import User
 
 
-def _hash_password(password: str) -> str:
+def _hash_password(password: str) -> bytes:
     """Encrypts a password"""
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
@@ -34,8 +33,6 @@ class Auth:
         except NoResultFound:
             hashed_password = _hash_password(password)
             return self._db.add_user(email, hashed_password)
-        except InvalidRequestError:
-            return None
 
     def valid_login(self, email: str, password: str) -> bool:
         """Validates user credentials"""
