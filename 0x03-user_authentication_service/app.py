@@ -27,7 +27,7 @@ def users() -> str:
         password = request.form.get('password', None)
         user = AUTH.register_user(email, password)
         return jsonify({"email": user.email, "message": "user created"}), 200
-    except ValueError as error:
+    except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
 
@@ -70,11 +70,12 @@ def profile() -> str:
 
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
 def get_reset_password_token() -> str:
+    """Get token to reset the password"""
     email = request.form.get('email', None)
     try:
         reset_token = AUTH.get_reset_password_token(email)
         return jsonify({"email": email, "reset_token": reset_token}), 200
-    except ValueError as error:
+    except ValueError:
         abort(403)
 
 
